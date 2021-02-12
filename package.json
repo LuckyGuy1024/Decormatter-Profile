@@ -24,7 +24,11 @@
     "deploy": "gh-pages -d example/build"
   },
   "peerDependencies": {
-    "react": "^16.0.0"
+    "react": "*",
+    "@decormatters/dm-theme": "*",
+    "styled-components": "*",
+    "react-image-crop": "*",
+    "node-sass": "*"
   },
   "devDependencies": {
     "microbundle-crl": "^0.13.10",

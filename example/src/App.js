@@ -1,10 +1,52 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 
-import { ExampleComponent } from 'dm-profile'
+import { DMProfileSidebar, DMSettings } from 'dm-profile'
 import 'dm-profile/dist/index.css'
 
 const App = () => {
-  return <ExampleComponent text="Create React Library Example 😄" />
+  const rProfile = useRef()
+  const rProfile2 = useRef()
+  useEffect(() => {
+    rProfile2.current.load()
+  }, [])
+
+  const getCookie = cname => {
+    let name = cname + '='
+    let decodedCookie = decodeURIComponent(document.cookie)
+    let ca = decodedCookie.split(';')
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i]
+      while (c.charAt(0) === ' ') {
+        c = c.substring(1)
+      }
+      if (c.indexOf(name) === 0) {
+        return c.substring(name.length, c.length)
+      }
+    }
+    return false
+  }
+
+  const getUserToken = () => {
+    const userCookie = getCookie('user')
+    if (userCookie === false) return null
+    const userCookieObject = JSON.parse(atob(userCookie))
+    return userCookieObject.puser.sessionToken
+  }
+
+  const getUser = () => {
+    const userCookie = getCookie('user')
+    
+    if (userCookie === false) return null
+    const userCookieObject = JSON.parse(atob(userCookie))
+    return userCookieObject.puser
+  }
+
+  return (
+    <>
+      <DMProfileSidebar ref={rProfile2} user={getUser()} token={getUserToken()} scheme="dark" dev />
+      {/*<DMSettings ref={rProfile} user={getUser()} token={getUserToken()} scheme="dark" dev />*/}
+    </>
+  )
 }
 
 export default App

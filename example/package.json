@@ -10,10 +10,15 @@
     "eject": "node ../node_modules/react-scripts/bin/react-scripts.js eject"
   },
   "dependencies": {
+    "@decormatters/dm-theme": "^0.1.10",
+    "dm-profile": "link:..",
+    "node-sass": "4.14.1",
     "react": "link:../node_modules/react",
     "react-dom": "link:../node_modules/react-dom",
+    "react-image-crop": "^8.6.6",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "link:../node_modules/react-scripts",
-    "dm-profile": "link:.."
+    "styled-components": "*"
   },
   "devDependencies": {
     "@babel/plugin-syntax-object-rest-spread": "^7.8.3"
