@@ -50,6 +50,7 @@ const SettingsProfile = ({ scheme, onUpdated }) => {
 
   useEffect(() => {
     if (!profile) return
+
     setSubmitting(false)
     setEdited(false)
     setSaved(false)
@@ -106,8 +107,6 @@ const SettingsProfile = ({ scheme, onUpdated }) => {
         saveProfile({
           aboutMe: about
         }).then(p => {
-          setSubmitting(false)
-
           if(r.error) {
             setSubmitting(false)
             if(r.code === 125) setError('Username must be less than 15 characters')
@@ -115,8 +114,9 @@ const SettingsProfile = ({ scheme, onUpdated }) => {
           }
 
           setOAbout(about)
+          setSubmitting(false)
           setSaved(true)
-          
+
           if(onUpdated) onUpdated()
         })
       })
@@ -124,8 +124,6 @@ const SettingsProfile = ({ scheme, onUpdated }) => {
 
     if (username !== ousername) {
       saveUsername(username).then(r => {
-        console.log(r)
-        setSubmitting(false)
 
         if(r.error) {
           setSubmitting(false)
@@ -134,8 +132,9 @@ const SettingsProfile = ({ scheme, onUpdated }) => {
         }
 
         setOUsername(username)
+        setSubmitting(false)
         setSaved(true)
-
+    
         if(onUpdated) onUpdated()
       })
     }

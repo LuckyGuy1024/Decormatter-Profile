@@ -12,6 +12,12 @@ const DMProfileSidebar = forwardRef(({ scheme, user, token, dev, zIndex, top, mi
   useImperativeHandle(ref, () => ({
     load: () => {
       rProfile.current.load()
+    },
+    closeSettings: () => {
+      showSettings(false)
+    },
+    closeProfile: () => {
+
     }
   }))
 
@@ -20,7 +26,7 @@ const DMProfileSidebar = forwardRef(({ scheme, user, token, dev, zIndex, top, mi
   }
 
   const handleUpdated = () => {
-    rProfile.current.load()
+    //rProfile.current.load()
     if(onUpdated) onUpdated()
   }
 

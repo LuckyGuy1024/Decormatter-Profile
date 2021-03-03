@@ -90,11 +90,44 @@ const ProfileProvider = ({ dev, token, ...props }) => {
 
   const saveUsername = async username => {
     let data = await api(endpoint + 'updateUserUniqueDisplayName1', appid, token, JSON.stringify({ uniqueDisplayName: username }))
+    if(profile) setProfile(
+      {
+        ...profile,
+        user: {
+          ...profile.user,
+          uniqueDisplayName: username
+        }
+      }
+    )
     return data
   }
 
   const saveProfile = async body => {
     let data = await api(endpoint + 'updateUser1', appid, token, JSON.stringify(body))
+    
+    if(!data) return null
+
+    var pic = ''
+    const result = data.result
+
+    if (result.user && result.user.thumbProfileImageFile) {
+      pic = result.user.thumbProfileImageFile.url
+    } else if (result.user && result.user.cfTbImageUrl) {
+      pic = result.user.cfTbImageUrl
+    } else {
+      pic = 'https://didr9pubr8qfh.cloudfront.net/mobile_other/profile_avatars/Profile5.png'
+    }
+    
+    if(profile) setProfile(
+      {
+        ...profile,
+        user: {
+          ...result.user
+        },
+        pic
+      }
+    )
+
     return data
   }
 
