@@ -14,7 +14,7 @@ const DMProfileSidebar = forwardRef(({ scheme, user, token, dev, zIndex, top, mi
       rProfile.current.load()
     },
     closeSettings: () => {
-      showSettings(false)
+      setShowSettings(false)
     },
     closeProfile: () => {
 
