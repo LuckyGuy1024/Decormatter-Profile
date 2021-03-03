@@ -15,22 +15,28 @@ import BadgeModal from '../components/modals/BadgeModal'
 const ProfileContainer = styled.div`
   position: absolute;
   height: 100vh;
-  z-index: 200;
+  width: 100%;
+
+  z-index: ${props => (props.zIndex ? props.zIndex : '200')};
+  padding-top: ${props => (props.top ? props.top + 'px' : '0')};
   background-color: ${props => (props.scheme === 'dark' ? '#000000' : '#FFFFFF')};
 
-  display: flex;
+  display: ${props => (props.minimizeShow === true ? 'flex' : 'none')};
   flex-direction: column;
   flex-wrap: nowrap;
 
-  overflow: hidden;
-
   font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', sans-serif;
 
+  overflow: hidden;
+
+
   @media (min-width: 992px) {
+    display: flex;
     width: 240px;
   }
 
   @media (min-width: 1200px) {
+    display: flex;
     width: 415px;
   }
 `
@@ -43,7 +49,12 @@ const ProfileMainContainer = styled.div`
   flex-wrap: nowrap;
   justify-content: flex-start;
 
-  overflow-y: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  &:hover {
+    overflow-y: auto;
+  }
 
   @media (min-width: 992px) {
     padding-left: 16px;
@@ -67,10 +78,7 @@ const ProfileMainContainer = styled.div`
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: flex-start;
-
-  &:hover {
-    overflow-y: auto;
-  }
+ 
 
   @media (min-width: 1200px) {
     padding-left: 36px;
@@ -157,7 +165,7 @@ const Back = styled(BackIcon)`
   cursor: pointer;
 `
 
-const ProfileSidebar = forwardRef(({ scheme, onBack, onFill, onSettings, onMembership }, ref) => {
+const ProfileSidebar = forwardRef(({ scheme, zIndex, top, minimizeShow, onSettings, onMembership, onClose, onRefill }, ref) => {
   const { loadProfile, profile, membership } = useProfile()
 
   const rBadge = useRef()
@@ -193,7 +201,10 @@ const ProfileSidebar = forwardRef(({ scheme, onBack, onFill, onSettings, onMembe
       if (profile.badgeRewards) setBadgesComplete(profile.badgeRewards)
       if (profile.badgesNotStarted) setBadgesIncomplete(profile.badgesNotStarted)
       if (profile.user && profile.user.numFollowers) setFollowers(profile.user.numFollowers)
+      else setFollowers(0)
+
       if (profile.user && profile.user.numFollowing) setFollowing(profile.user.numFollowing)
+      else setFollowing(0)
     }
   }, [profile])
 
@@ -207,11 +218,11 @@ const ProfileSidebar = forwardRef(({ scheme, onBack, onFill, onSettings, onMembe
   }
 
   const handleBack = e => {
-    if (onBack) onBack()
+    if (onClose) onClose()
   }
 
   const handleFill = e => {
-    if (onFill) onFill()
+    if (onRefill) onRefill()
   }
 
   const handleSettings = e => {
@@ -223,12 +234,13 @@ const ProfileSidebar = forwardRef(({ scheme, onBack, onFill, onSettings, onMembe
   }
 
   return (
-    <ProfileContainer scheme={scheme}>
-      <BadgeModal ref={rBadge} scheme={scheme}/>
-      <BackButtonContainer>
-        <Back scheme={scheme} onClick={handleBack} />
-      </BackButtonContainer>
-
+    <ProfileContainer scheme={scheme} zIndex={zIndex} top={top} minimizeShow={minimizeShow}>
+      <BadgeModal ref={rBadge} scheme={scheme} />
+      {onClose && (
+        <BackButtonContainer>
+          <Back scheme={scheme} onClick={handleBack} />
+        </BackButtonContainer>
+      )}
       <ProfileMainContainer>
         <ProfileCircleContainer>
           <ProfileCircle userLevel={userLevel} pic={pic} showUserLevel scheme={scheme} />
@@ -241,16 +253,25 @@ const ProfileSidebar = forwardRef(({ scheme, onBack, onFill, onSettings, onMembe
         </ProfileQuote>
         <Following scheme={scheme} following={following} followers={followers} />
         <ProfileEditContainer>
-          <DMPrimaryAltButton scheme={scheme} onClick={e => onSettings(true)}>Edit Profile</DMPrimaryAltButton>
+          <DMPrimaryAltButton scheme={scheme} onClick={e => onSettings(true)}>
+            Edit Profile
+          </DMPrimaryAltButton>
         </ProfileEditContainer>
-        <InventoryContainer scheme={scheme} title="Membership" img={membership ? 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_on.png' : 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_off.png'} actionTitle={membership ? 'Settings' : 'Upgrade'} onClick={membership ? handleSettings : handleMembership}>
+        {/*<InventoryContainer scheme={scheme} title="Membership" img={membership ? 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_on.png' : 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_off.png'} actionTitle={membership ? 'Settings' : 'Upgrade'} onClick={membership ? handleSettings : handleMembership}>
           {membership === null && 'Starter'}
+      </InventoryContainer>*/}
+        <InventoryContainer
+          scheme={scheme}
+          title="Membership"
+          img={membership ? 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_on.png' : 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_off.png'}
+        >
+          {membership === null ? 'Starter' : 'Member'}
         </InventoryContainer>
         <InventoryContainer scheme={scheme} title="Dcoins" icon={CoinIcon} actionTitle="Refill" onClick={handleFill}>
           {numCoins && formatMoney(numCoins, 0)}
         </InventoryContainer>
         <HighlightContainer title="Badges" scheme={scheme}>
-          <Badges badgesComplete={badgesComplete} badgesIncomplete={badgesIncomplete} onClick={handleBadge}/>
+          <Badges badgesComplete={badgesComplete} badgesIncomplete={badgesIncomplete} onClick={handleBadge} />
         </HighlightContainer>
       </ProfileMainContainer>
 

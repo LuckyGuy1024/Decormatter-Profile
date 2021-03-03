@@ -90,7 +90,7 @@ const checkMatching = (arr1, arr2) => {
   return true
 }
 
-const SettingsPersonal = ({ scheme }) => {
+const SettingsPersonal = ({ scheme, onUploaded }) => {
   const { profile, saveProfile } = useProfile()
 
   const [submitting, setSubmitting] = useState(false)
@@ -225,6 +225,7 @@ const SettingsPersonal = ({ scheme }) => {
       setOTags([...tags])
       setSubmitting(false)
       setSaved(true)
+      if(onUpdated) onUpdated()
     })
   }
 

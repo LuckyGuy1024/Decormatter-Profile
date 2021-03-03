@@ -5,6 +5,8 @@ import SettingsNav from './SettingsNav'
 import SettingsProfile from './SettingsProfile'
 import SettingsPersonal from './SettingsPersonal'
 import SettingsAccount from './SettingsAccount'
+import SettingsPlan from './SettingsPlan'
+
 import { ReactComponent as BackIcon } from '../assets/backcircle.svg'
 
 const Wrapper = styled.div`
@@ -82,19 +84,23 @@ const nav = [
     path: '/settings/personalization'
   },
   {
+    label: 'My Plan',
+    value: 'plan',
+    path: '/settings/plan'
+  },
+  {
     label: 'Account and Security',
     value: 'account',
     path: '/settings/account'
   }
 ]
 
-const Settings = forwardRef(({ scheme, user, token, dev, onSettings }, ref) => {
+const Settings = forwardRef(({ scheme, user, token, dev, onSettings, onUpdated, onChangeMembership }, ref) => {
   const { loadProfile, profile, membership } = useProfile()
   const [selected, setSelected] = useState(nav[0])
 
   useImperativeHandle(ref, () => ({
     load: () => {
-      console.log('LOAD DATA!!!!!!!')
       loadProfile()
     }
   }))
@@ -102,16 +108,19 @@ const Settings = forwardRef(({ scheme, user, token, dev, onSettings }, ref) => {
   const handleNav = e => {
     setSelected(e)
   }
+
+
   return (
     <Wrapper scheme={scheme}>
       {onSettings && (<BackButtonContainer>
         <Back scheme={scheme} onClick={e => onSettings(false)} />
       </BackButtonContainer>)}
-      <NavContainer offset={onSettings ? true : false}><SettingsNav data={nav} scheme={scheme} selected={selected} onClick={handleNav}/></NavContainer>
+      <NavContainer offset={onSettings === true ? 'true' : 'false'}><SettingsNav data={nav} scheme={scheme} selected={selected} onClick={handleNav}/></NavContainer>
       <BodyContainer scheme={scheme}>
-        {selected.value === 'basic' && <SettingsProfile scheme={scheme} data={profile}/>}
-        {selected.value === 'personal' && <SettingsPersonal scheme={scheme} data={profile}/>}
-        {selected.value === 'account' && <SettingsAccount scheme={scheme} data={profile} user={user}/>}
+        {selected.value === 'basic' && <SettingsProfile scheme={scheme} data={profile} onUpdated={onUpdated}/>}
+        {selected.value === 'personal' && <SettingsPersonal scheme={scheme} data={profile} onUpdated={onUpdated}/>}
+        {selected.value === 'plan' && <SettingsPlan scheme={scheme} data={profile} user={user} onUpdated={onUpdated} onChangeMembership={onChangeMembership}/>}
+        {selected.value === 'account' && <SettingsAccount scheme={scheme} data={profile} user={user} onUpdated={onUpdated}/>}
       </BodyContainer>
     </Wrapper>
   )

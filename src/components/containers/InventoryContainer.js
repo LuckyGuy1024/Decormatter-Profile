@@ -95,7 +95,7 @@ const InventoryContainer = ({ scheme, icon, img, title, children, actionTitle, o
         {img && <MaterialImg src={img} />}
         {icon && <MaterialIcon as={icon} />}
         <InfoContainer scheme={scheme}>{children}</InfoContainer>
-        <ActionButton size='sm' onClick={handleClick}>{actionTitle}</ActionButton>
+        {actionTitle && <ActionButton size='sm' onClick={handleClick}>{actionTitle}</ActionButton>}
       </EntryBodyContainer>
     </EntryContainer>
   )

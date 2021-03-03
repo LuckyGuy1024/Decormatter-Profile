@@ -7,7 +7,6 @@ const DMSettings = forwardRef(({ scheme, user, token, dev }, ref) => {
 
   useImperativeHandle(ref, () => ({
     load: () => {
-      console.log("LOAD DATA!")
       rProfile.current.load()
     }
   }))

@@ -41,9 +41,16 @@ const App = () => {
     return userCookieObject.puser
   }
 
+  const handleProfileUpdated = e => {
+    console.log("DO SOMETHING AFTER PROFILE UPDATED")
+  }
+
+  const handleChangeMembership = e => {
+    console.log("CHANGE MEMBERSHIP")
+  }
   return (
     <>
-      <DMProfileSidebar ref={rProfile2} user={getUser()} token={getUserToken()} scheme="dark" dev />
+      <DMProfileSidebar ref={rProfile2} user={getUser()} token={getUserToken()} scheme="dark" onUpdated={handleProfileUpdated} onChangeMembership={handleChangeMembership} minimizeShow={true} dev />
       {/*<DMSettings ref={rProfile} user={getUser()} token={getUserToken()} scheme="dark" dev />*/}
     </>
   )

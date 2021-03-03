@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 const FollowContainer = styled.div`
-  overflow: hidden;
+
   border-radius: 10px;
 
   display: flex;
@@ -56,14 +56,12 @@ const Follow = ({ scheme, following, followers }) => {
   return (
     <FollowContainer scheme={scheme}>
       <EntryContainer>
-        {!following && <Spacer />}
-        {following && <Count scheme={scheme}>{following}</Count>}
+        {following === null ? <Spacer /> : <Count scheme={scheme}>{following}</Count>}
         <Title scheme={scheme}>following</Title>
       </EntryContainer>
       <Divider />
       <EntryContainer>
-        {!followers && <Spacer />}
-        {followers && <Count scheme={scheme}>{followers}</Count>}
+        {followers === null ? <Spacer /> : <Count scheme={scheme}>{followers}</Count>}
         <Title scheme={scheme}>followers</Title>
       </EntryContainer>
     </FollowContainer>

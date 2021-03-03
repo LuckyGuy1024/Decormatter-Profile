@@ -12,6 +12,7 @@
   "dependencies": {
     "@decormatters/dm-theme": "^0.1.10",
     "dm-profile": "link:..",
+    "moment": "^2.29.1",
     "node-sass": "4.14.1",
     "react": "link:../node_modules/react",
     "react-dom": "link:../node_modules/react-dom",

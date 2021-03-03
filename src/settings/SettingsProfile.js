@@ -25,10 +25,10 @@ const fileInput = {
   height: '0px',
   width: '0px',
   overflow: 'hidden',
-  opacity: '0',
+  opacity: '0'
 }
 
-const SettingsProfile = ({ scheme }) => {
+const SettingsProfile = ({ scheme, onUpdated }) => {
   const rCrop = useRef()
   const rFile = useRef()
 
@@ -81,9 +81,24 @@ const SettingsProfile = ({ scheme }) => {
     setEdited(mod)
   }, [username, ousername, about, oabout])
 
+  const invalidCharacters = un => {
+    const RegEx = /[^a-z\d_.]/i
+    return !RegEx.test(un)
+  }
+
   const handleSave = e => {
     if (submitting === true) return
+    setError(null)
     setSubmitting(true)
+
+    if (username !== ousername) {
+      const checkName = invalidCharacters(username)
+      if(checkName === false) {
+        setSubmitting(false)
+        setError('Username cannot contain special characters')
+        return
+      }    
+    }
 
     if (username !== ousername && about !== oabout) {
       saveUsername(username).then(r => {
@@ -91,18 +106,37 @@ const SettingsProfile = ({ scheme }) => {
         saveProfile({
           aboutMe: about
         }).then(p => {
-          setOAbout(about)
           setSubmitting(false)
+
+          if(r.error) {
+            setSubmitting(false)
+            if(r.code === 125) setError('Username must be less than 15 characters')
+            return
+          }
+
+          setOAbout(about)
           setSaved(true)
+          
+          if(onUpdated) onUpdated()
         })
       })
     }
 
     if (username !== ousername) {
       saveUsername(username).then(r => {
-        setOUsername(username)
+        console.log(r)
         setSubmitting(false)
+
+        if(r.error) {
+          setSubmitting(false)
+          if(r.code === 125) setError('Username must be less than 15 characters')
+          return
+        }
+
+        setOUsername(username)
         setSaved(true)
+
+        if(onUpdated) onUpdated()
       })
     }
 
@@ -113,6 +147,8 @@ const SettingsProfile = ({ scheme }) => {
         setOAbout(about)
         setSubmitting(false)
         setSaved(true)
+
+        if(onUpdated) onUpdated()
       })
     }
   }
@@ -136,11 +172,11 @@ const SettingsProfile = ({ scheme }) => {
     setPicSubmitting(true)
     const thumbProfileImageData = {
       __type: 'Bytes',
-      base64: img,
+      base64: img
     }
 
     const body = {
-      thumbProfileImageData,
+      thumbProfileImageData
     }
 
     saveProfile(body).then(p => {
