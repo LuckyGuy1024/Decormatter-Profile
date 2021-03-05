@@ -54,7 +54,7 @@ const ProfileCircle = ({ scheme, pic, userLevel, showUserLevel }) => {
       <ProfilePicInnerContainer>
         <ProfilePic scheme={scheme} style={{ backgroundImage: `url(${pic})` }}/>
         {showUserLevel && (<ProfileLevelContainer>
-          {userLevel && <ProfileLevel>Lv {userLevel || 0}</ProfileLevel>}
+          {userLevel !== null && <ProfileLevel>Lv {userLevel || 0}</ProfileLevel>}
         </ProfileLevelContainer>)}
       </ProfilePicInnerContainer>
     </ProfilePicContainer>

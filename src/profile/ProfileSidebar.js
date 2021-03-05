@@ -173,7 +173,7 @@ const ProfileSidebar = forwardRef(({ scheme, zIndex, top, minimizeShow, onSettin
   const [username, setUsername] = useState('empty')
   const [about, setAbout] = useState('empty')
   const [pic, setPic] = useState('')
-  const [userLevel, setUserLevel] = useState(null)
+  const [userLevel, setUserLevel] = useState(0)
   const [numCoins, setNumCoins] = useState(null)
 
   const [badgesComplete, setBadgesComplete] = useState([])
@@ -198,6 +198,7 @@ const ProfileSidebar = forwardRef(({ scheme, zIndex, top, minimizeShow, onSettin
       else setNumCoins(0)
       if (profile.pic) setPic(profile.pic)
       if (profile.userLevel) setUserLevel(Math.floor(profile.userLevel))
+      else setUserLevel(0)
       if (profile.badgeRewards) setBadgesComplete(profile.badgeRewards)
       if (profile.badgesNotStarted) setBadgesIncomplete(profile.badgesNotStarted)
       if (profile.user && profile.user.numFollowers) setFollowers(profile.user.numFollowers)
