@@ -72,8 +72,10 @@ const SettingsPlan = ({ scheme,  onChangeMembership }) => {
     if (!profile) return
     //Check Revenue Cat for subscription
     loadMembership(profile.user.objectId).then(r => {
-      if (Object.keys(r.subscriber.subscriptions).length === 0 && obj.constructor === Object) {
+      if (Object.keys(r.subscriber.subscriptions).length === 0 && r.subscriber.subscriptions.constructor === Object) {
+        setStripeProduct(null)
         setIsStarter(true)
+        return
       }
       setSubscription(Object.values(r.subscriber.subscriptions)[0])
       //Get Plan data from Stripe
