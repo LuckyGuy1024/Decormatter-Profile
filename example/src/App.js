@@ -50,7 +50,7 @@ const App = () => {
   }
   return (
     <>
-      <DMProfileSidebar ref={rProfile2} user={getUser()} token={getUserToken()} scheme="dark" onUpdated={handleProfileUpdated} onChangeMembership={handleChangeMembership} minimizeShow={true} dev />
+      <DMProfileSidebar ref={rProfile2} user={getUser()} token={getUserToken()} scheme="dark" onUpdated={handleProfileUpdated} onChangeMembership={handleChangeMembership} minimizeShow={true} dev={false} />
       {/*<DMSettings ref={rProfile} user={getUser()} token={getUserToken()} scheme="dark" dev />*/}
     </>
   )

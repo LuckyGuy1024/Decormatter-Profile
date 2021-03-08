@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from 'react'
+import React, { useState, createContext, useContext, useEffect } from 'react'
 import { api } from '../utils'
 export const ProfileContext = createContext()
 
@@ -15,11 +15,7 @@ const ProfileProvider = ({ dev, token, ...props }) => {
   const DEV_APPID = 1
   const PROD_APPID = 3
 
-  const [endpoint, setEndpoint] = useState(DEV_ENDPOINT)
-  const [appid, setAppid] = useState(DEV_APPID)
-
   const [profile, setProfile] = useState(null)
-  const [user, setUser] = useState(null)
   const [membership, setMembership] = useState(null)
  
   const loadMembership = async userid => {
@@ -66,7 +62,10 @@ const ProfileProvider = ({ dev, token, ...props }) => {
   }
 
   const loadProfile = async () => {
-    let me = await api(endpoint + 'getMe1', appid, token, JSON.stringify({}))
+    const ep = dev === true ? DEV_ENDPOINT : PROD_ENDPOINT
+    const ai = dev === true ? DEV_APPID : PROD_APPID
+
+    let me = await api(ep + 'getMe1', ai, token, JSON.stringify({}))
     const result = me.result
     var pic = ''
     if (result.user && result.user.thumbProfileImageFile) {
@@ -79,7 +78,7 @@ const ProfileProvider = ({ dev, token, ...props }) => {
     const d = { ...result, pic }
     setProfile(d)
 
-    let sub = await api(endpoint + 'getImageSubscription1', appid, token, JSON.stringify({}))
+    let sub = await api(ep + 'getImageSubscription1', ai, token, JSON.stringify({}))
 
     if (!sub.result.imageSubscriptionInfo) setMembership(null)
     else if (Object.keys(sub.result.imageSubscriptionInfo).length === 0 && sub.result.imageSubscriptionInfo.constructor === Object) setMembership(null)
@@ -89,7 +88,10 @@ const ProfileProvider = ({ dev, token, ...props }) => {
   }
 
   const saveUsername = async username => {
-    let data = await api(endpoint + 'updateUserUniqueDisplayName1', appid, token, JSON.stringify({ uniqueDisplayName: username }))
+    const ep = dev === true ? DEV_ENDPOINT : PROD_ENDPOINT
+    const ai = dev === true ? DEV_APPID : PROD_APPID
+
+    let data = await api(ep + 'updateUserUniqueDisplayName1', ai, token, JSON.stringify({ uniqueDisplayName: username }))
     if(profile) setProfile(
       {
         ...profile,
@@ -103,7 +105,10 @@ const ProfileProvider = ({ dev, token, ...props }) => {
   }
 
   const saveProfile = async body => {
-    let data = await api(endpoint + 'updateUser1', appid, token, JSON.stringify(body))
+    const ep = dev === true ? DEV_ENDPOINT : PROD_ENDPOINT
+    const ai = dev === true ? DEV_APPID : PROD_APPID
+
+    let data = await api(ep + 'updateUser1', ai, token, JSON.stringify(body))
     
     if(!data) return null
 
@@ -132,22 +137,28 @@ const ProfileProvider = ({ dev, token, ...props }) => {
   }
 
   const updateEmail = async email => {
+    const ep = dev === true ? DEV_ENDPOINT : PROD_ENDPOINT
+    const ai = dev === true ? DEV_APPID : PROD_APPID
+
     const body = {
       email
     }
-    let data = await api(endpoint + 'updateUser1', appid, token, JSON.stringify(body))
+    let data = await api(ep + 'updateUser1', ai, token, JSON.stringify(body))
     return data
   }
 
   const resetPassword = async email => {
+    const ep = dev === true ? DEV_ENDPOINT : PROD_ENDPOINT
+    const ai = dev === true ? DEV_APPID : PROD_APPID
+
     const body = {
       email
     }
-    let data = await api(endpoint + 'requestPasswordReset1', appid, token, JSON.stringify(body))
+    let data = await api(ep + 'requestPasswordReset1', ai, token, JSON.stringify(body))
     return data
   }
 
-  return <ProfileContext.Provider value={{ endpoint, appid, profile, membership, loadMembership, loadMembershipProduct, loadProfile, saveUsername, saveProfile, updateEmail, resetPassword }} {...props} />
+  return <ProfileContext.Provider value={{ profile, membership, loadMembership, loadMembershipProduct, loadProfile, saveUsername, saveProfile, updateEmail, resetPassword }} {...props} />
 }
 
 const useProfile = () => useContext(ProfileContext)
