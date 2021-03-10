@@ -16,8 +16,10 @@ const ProfileProvider = ({ dev, token, ...props }) => {
   const PROD_APPID = 3
 
   const [profile, setProfile] = useState(null)
-  const [membership, setMembership] = useState(null)
- 
+  const [loading, setLoading] = useState(true)
+  const [member, setMember] = useState(false)
+  const [membership, setMembership] = useState({})
+
   const loadMembership = async userid => {
     const options = {
       method: 'GET',
@@ -77,14 +79,54 @@ const ProfileProvider = ({ dev, token, ...props }) => {
     }
     const d = { ...result, pic }
     setProfile(d)
-
+    /*
+    //Old membership
     let sub = await api(ep + 'getImageSubscription1', ai, token, JSON.stringify({}))
 
     if (!sub.result.imageSubscriptionInfo) setMembership(null)
     else if (Object.keys(sub.result.imageSubscriptionInfo).length === 0 && sub.result.imageSubscriptionInfo.constructor === Object) setMembership(null)
     else setMembership(sub.result.imageSubscriptionInfo)
-
+*/
     return d
+  }
+
+  const loadAll = async () => {
+    setLoading(true)
+    const a = await loadProfile()
+    console.log(a.user.objectId)
+    if (!a.user) return null
+    const b = await loadMembership(a.user.objectId)
+
+    var member = false
+    var membership = {}
+    //console.log(rdata.subscriber.subscriptions)
+    if (Object.keys(b.subscriber.subscriptions).length === 0) {
+      setMember(member)
+      setMembership(membership)
+      setLoading(false)
+      return {
+        member,
+        membership
+      }
+    }
+
+    member = true
+    membership = Object.values(b.subscriber.subscriptions)[0]
+    const c = await loadMembershipProduct(Object.keys(b.subscriber.subscriptions)[0])
+    console.log(c)
+    membership = {
+      ...membership,
+      ...c
+    }
+
+    setMember(member)
+    setMembership(membership)
+    setLoading(false)
+
+    return {
+      member,
+      membership
+    }
   }
 
   const saveUsername = async username => {
@@ -92,15 +134,14 @@ const ProfileProvider = ({ dev, token, ...props }) => {
     const ai = dev === true ? DEV_APPID : PROD_APPID
 
     let data = await api(ep + 'updateUserUniqueDisplayName1', ai, token, JSON.stringify({ uniqueDisplayName: username }))
-    if(profile) setProfile(
-      {
+    if (profile)
+      setProfile({
         ...profile,
         user: {
           ...profile.user,
           uniqueDisplayName: username
         }
-      }
-    )
+      })
     return data
   }
 
@@ -109,8 +150,8 @@ const ProfileProvider = ({ dev, token, ...props }) => {
     const ai = dev === true ? DEV_APPID : PROD_APPID
 
     let data = await api(ep + 'updateUser1', ai, token, JSON.stringify(body))
-    
-    if(!data) return null
+
+    if (!data) return null
 
     var pic = ''
     const result = data.result
@@ -122,16 +163,15 @@ const ProfileProvider = ({ dev, token, ...props }) => {
     } else {
       pic = 'https://didr9pubr8qfh.cloudfront.net/mobile_other/profile_avatars/Profile5.png'
     }
-    
-    if(profile) setProfile(
-      {
+
+    if (profile)
+      setProfile({
         ...profile,
         user: {
           ...result.user
         },
         pic
-      }
-    )
+      })
 
     return data
   }
@@ -158,7 +198,7 @@ const ProfileProvider = ({ dev, token, ...props }) => {
     return data
   }
 
-  return <ProfileContext.Provider value={{ profile, membership, loadMembership, loadMembershipProduct, loadProfile, saveUsername, saveProfile, updateEmail, resetPassword }} {...props} />
+  return <ProfileContext.Provider value={{ loading, profile, member, membership, loadAll, loadMembership, loadMembershipProduct, loadProfile, saveUsername, saveProfile, updateEmail, resetPassword }} {...props} />
 }
 
 const useProfile = () => useContext(ProfileContext)

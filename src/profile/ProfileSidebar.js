@@ -29,7 +29,6 @@ const ProfileContainer = styled.div`
 
   overflow: hidden;
 
-
   @media (min-width: 992px) {
     display: flex;
     width: 240px;
@@ -166,7 +165,7 @@ const Back = styled(BackIcon)`
 `
 
 const ProfileSidebar = forwardRef(({ scheme, zIndex, top, minimizeShow, onSettings, onMembership, onClose, onRefill }, ref) => {
-  const { loadProfile, profile, membership } = useProfile()
+  const { loadAll, loadProfile, loadMembership, loadMembershipProduct, loading, profile, member, membership } = useProfile()
 
   const rBadge = useRef()
 
@@ -184,7 +183,7 @@ const ProfileSidebar = forwardRef(({ scheme, zIndex, top, minimizeShow, onSettin
 
   useImperativeHandle(ref, () => ({
     load: () => {
-      loadProfile()
+      loadAll()
     }
   }))
 
@@ -261,16 +260,19 @@ const ProfileSidebar = forwardRef(({ scheme, zIndex, top, minimizeShow, onSettin
         {/*<InventoryContainer scheme={scheme} title="Membership" img={membership ? 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_on.png' : 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_off.png'} actionTitle={membership ? 'Settings' : 'Upgrade'} onClick={membership ? handleSettings : handleMembership}>
           {membership === null && 'Starter'}
       </InventoryContainer>*/}
+
         <InventoryContainer
           scheme={scheme}
           title="Membership"
-          img={membership ? 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_on.png' : 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_off.png'}
+          img={member ? 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_on.png' : 'https://didr9pubr8qfh.cloudfront.net/designer/badge_membership_off.png'}
         >
-          {membership === null ? 'Starter' : 'Member'}
+          {loading == true ? '' : member === false ? 'Starter' : membership.name + ' Member'}
         </InventoryContainer>
+
         <InventoryContainer scheme={scheme} title="Dcoins" icon={CoinIcon} actionTitle="Refill" onClick={handleFill}>
-          {numCoins && formatMoney(numCoins, 0)}
+          {loading == true ? '' : numCoins && formatMoney(numCoins, 0)}
         </InventoryContainer>
+
         <HighlightContainer title="Badges" scheme={scheme}>
           <Badges badgesComplete={badgesComplete} badgesIncomplete={badgesIncomplete} onClick={handleBadge} />
         </HighlightContainer>
