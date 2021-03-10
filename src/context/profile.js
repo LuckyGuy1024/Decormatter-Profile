@@ -93,7 +93,7 @@ const ProfileProvider = ({ dev, token, ...props }) => {
   const loadAll = async () => {
     setLoading(true)
     const a = await loadProfile()
-    console.log(a.user.objectId)
+    //console.log(a.user.objectId)
     if (!a.user) return null
     const b = await loadMembership(a.user.objectId)
 
@@ -113,7 +113,7 @@ const ProfileProvider = ({ dev, token, ...props }) => {
     member = true
     membership = Object.values(b.subscriber.subscriptions)[0]
     const c = await loadMembershipProduct(Object.keys(b.subscriber.subscriptions)[0])
-    console.log(c)
+    //console.log(c)
     membership = {
       ...membership,
       ...c

@@ -19,11 +19,6 @@ const SettingsAccount = ({ user, scheme }) => {
 
   const [errorPassword, setErrorPassword] = useState(null)
   const [completePassword, setCompletePassword] = useState(null)
-  
-  useEffect(() => {
-    if (!profile) return
-    console.log(profile)
-  }, [profile])
 
   useEffect(() => {
     if (!user) return
